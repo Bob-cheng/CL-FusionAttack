@@ -1,17 +1,17 @@
 
-# FusionAttack
+# Fusion is Not Enough: Single-Modal Attacks to Compromise Fusion Models in Autonomous Driving
 
 This is the official PyTorch implementation of our paper "Fusion is Not Enough: Single-Modal Attacks to Compromise Fusion Models in Autonomous Driving"
 
 ## Table of Contents
-1. [Code preparation](#Code-preparation)
-2. [Prepare Nuscenes dataset](#Prepare-Nuscenes-dataset)
-3. [Environment preparation](#Environment-preparation)
-4. [Prepare dataset annotation file and pretrained model](#Prepare-dataset-annotation-file-and-pretrained-model)
-5. [Config log](#Config-log)
-6. [Sensitivity heatmap generation](Sensitivity-heatmap-generation)
-7. [Patch generation](#Patch-generation)
-8. [Patch evaluation](#Patch-evaluation)
+1. [Code preparation](#code-preparation)
+2. [Prepare Nuscenes dataset](#prepare-nuscenes-dataset)
+3. [Environment preparation](#environment-preparation)
+4. [Prepare dataset annotation file and pretrained model](#prepare-dataset-annotation-file-and-pretrained-model)
+5. [Config log](#config-log)
+6. [Sensitivity heatmap generation](sensitivity-heatmap-generation)
+7. [Patch generation](#patch-generation)
+8. [Patch evaluation](#patch-evaluation)
 
 ## Code preparation
 Clone this repository to folder `~/FusionAttack`
