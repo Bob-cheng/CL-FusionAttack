@@ -1,0 +1,1742 @@
+2022-10-31 10:38:25,975 - mmdet - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.8.13 (default, Mar 28 2022, 11:38:47) [GCC 7.5.0]
+CUDA available: True
+GPU 0: NVIDIA A100-SXM4-80GB
+CUDA_HOME: /mnt/lustre/share/cuda-11.3
+NVCC: Build cuda_11.3.r11.3/compiler.29920130_0
+GCC: gcc (GCC) 5.4.0
+PyTorch: 1.9.0+cu111
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) Math Kernel Library Version 2020.0.0 Product Build 20191122 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.1.2 (Git Hash 98be7e8afa711dc9b66c8ff3504129cb82013cdb)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.1
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86
+  - CuDNN 8.0.5
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.1, CUDNN_VERSION=8.0.5, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.9.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+TorchVision: 0.10.0+cu111
+OpenCV: 4.6.0
+MMCV: 1.4.0
+MMCV Compiler: GCC 7.3
+MMCV CUDA Compiler: 11.1
+MMDetection: 2.11.0
+MMDetection3D: 0.11.0+63fa311
+------------------------------------------------------------
+
+2022-10-31 10:38:27,859 - mmdet - INFO - Distributed training: True
+2022-10-31 10:38:29,707 - mmdet - INFO - Config:
+point_cloud_range = [-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]
+class_names = [
+    'car', 'truck', 'construction_vehicle', 'bus', 'trailer', 'barrier',
+    'motorcycle', 'bicycle', 'pedestrian', 'traffic_cone'
+]
+dataset_type = 'NuScenesDataset'
+data_root = 'data/nuscenes/'
+input_modality = dict(
+    use_lidar=True,
+    use_camera=True,
+    use_radar=False,
+    use_map=False,
+    use_external=False)
+img_scale = (800, 448)
+num_views = 6
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+file_client_args = dict(
+    backend='petrel',
+    path_mapping=dict({
+        './data/nuscenes/': 's3://nuscenes_part/',
+        'data/nuscenes/': 's3://nuscenes_part/',
+        './data/nuscenes-all/': 's3://nuscenes_part/',
+        'data/nuscenes-all/': 's3://nuscenes_part/',
+        './data/nuscenes-new/': 's3://nuscenes_part/',
+        'data/nuscenes-new/': 's3://nuscenes_part/'
+    }))
+train_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=5,
+        use_dim=[0, 1, 2, 3, 4],
+        file_client_args=dict(
+            backend='petrel',
+            path_mapping=dict({
+                './data/nuscenes/': 's3://nuscenes_part/',
+                'data/nuscenes/': 's3://nuscenes_part/',
+                './data/nuscenes-all/': 's3://nuscenes_part/',
+                'data/nuscenes-all/': 's3://nuscenes_part/',
+                './data/nuscenes-new/': 's3://nuscenes_part/',
+                'data/nuscenes-new/': 's3://nuscenes_part/'
+            }))),
+    dict(
+        type='LoadPointsFromMultiSweeps',
+        sweeps_num=10,
+        use_dim=[0, 1, 2, 3, 4],
+        file_client_args=dict(
+            backend='petrel',
+            path_mapping=dict({
+                './data/nuscenes/': 's3://nuscenes_part/',
+                'data/nuscenes/': 's3://nuscenes_part/',
+                './data/nuscenes-all/': 's3://nuscenes_part/',
+                'data/nuscenes-all/': 's3://nuscenes_part/',
+                './data/nuscenes-new/': 's3://nuscenes_part/',
+                'data/nuscenes-new/': 's3://nuscenes_part/'
+            }))),
+    dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True),
+    dict(type='LoadMultiViewImageFromFiles'),
+    dict(
+        type='GlobalRotScaleTrans',
+        rot_range=[-0.785, 0.785],
+        scale_ratio_range=[0.9, 1.1],
+        translation_std=[0.5, 0.5, 0.5]),
+    dict(
+        type='RandomFlip3D',
+        sync_2d=True,
+        flip_ratio_bev_horizontal=0.5,
+        flip_ratio_bev_vertical=0.5),
+    dict(
+        type='PointsRangeFilter',
+        point_cloud_range=[-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]),
+    dict(
+        type='ObjectRangeFilter',
+        point_cloud_range=[-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]),
+    dict(
+        type='ObjectNameFilter',
+        classes=[
+            'car', 'truck', 'construction_vehicle', 'bus', 'trailer',
+            'barrier', 'motorcycle', 'bicycle', 'pedestrian', 'traffic_cone'
+        ]),
+    dict(type='PointShuffle'),
+    dict(type='MyResize', img_scale=(800, 448), keep_ratio=True),
+    dict(
+        type='MyNormalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='MyPad', size_divisor=32),
+    dict(
+        type='DefaultFormatBundle3D',
+        class_names=[
+            'car', 'truck', 'construction_vehicle', 'bus', 'trailer',
+            'barrier', 'motorcycle', 'bicycle', 'pedestrian', 'traffic_cone'
+        ]),
+    dict(
+        type='Collect3D',
+        keys=['points', 'img', 'gt_bboxes_3d', 'gt_labels_3d'])
+]
+test_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=5,
+        use_dim=[0, 1, 2, 3, 4],
+        file_client_args=dict(
+            backend='petrel',
+            path_mapping=dict({
+                './data/nuscenes/': 's3://nuscenes_part/',
+                'data/nuscenes/': 's3://nuscenes_part/',
+                './data/nuscenes-all/': 's3://nuscenes_part/',
+                'data/nuscenes-all/': 's3://nuscenes_part/',
+                './data/nuscenes-new/': 's3://nuscenes_part/',
+                'data/nuscenes-new/': 's3://nuscenes_part/'
+            }))),
+    dict(
+        type='LoadPointsFromMultiSweeps',
+        sweeps_num=10,
+        use_dim=[0, 1, 2, 3, 4],
+        file_client_args=dict(
+            backend='petrel',
+            path_mapping=dict({
+                './data/nuscenes/': 's3://nuscenes_part/',
+                'data/nuscenes/': 's3://nuscenes_part/',
+                './data/nuscenes-all/': 's3://nuscenes_part/',
+                'data/nuscenes-all/': 's3://nuscenes_part/',
+                './data/nuscenes-new/': 's3://nuscenes_part/',
+                'data/nuscenes-new/': 's3://nuscenes_part/'
+            }))),
+    dict(type='LoadMultiViewImageFromFiles'),
+    dict(
+        type='MultiScaleFlipAug3D',
+        img_scale=(800, 448),
+        pts_scale_ratio=1,
+        flip=False,
+        transforms=[
+            dict(
+                type='GlobalRotScaleTrans',
+                rot_range=[0, 0],
+                scale_ratio_range=[1.0, 1.0],
+                translation_std=[0, 0, 0]),
+            dict(type='RandomFlip3D'),
+            dict(type='MyResize', img_scale=(800, 448), keep_ratio=True),
+            dict(
+                type='MyNormalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='MyPad', size_divisor=32),
+            dict(
+                type='DefaultFormatBundle3D',
+                class_names=[
+                    'car', 'truck', 'construction_vehicle', 'bus', 'trailer',
+                    'barrier', 'motorcycle', 'bicycle', 'pedestrian',
+                    'traffic_cone'
+                ],
+                with_label=False),
+            dict(type='Collect3D', keys=['points', 'img'])
+        ])
+]
+data = dict(
+    samples_per_gpu=2,
+    workers_per_gpu=6,
+    train=dict(
+        type='CBGSDataset',
+        dataset=dict(
+            type='NuScenesDataset',
+            data_root='data/nuscenes/',
+            num_views=6,
+            ann_file='data/nuscenes//nuscenes_infos_train.pkl',
+            load_interval=1,
+            pipeline=[
+                dict(
+                    type='LoadPointsFromFile',
+                    coord_type='LIDAR',
+                    load_dim=5,
+                    use_dim=[0, 1, 2, 3, 4],
+                    file_client_args=dict(
+                        backend='petrel',
+                        path_mapping=dict({
+                            './data/nuscenes/':
+                            's3://nuscenes_part/',
+                            'data/nuscenes/':
+                            's3://nuscenes_part/',
+                            './data/nuscenes-all/':
+                            's3://nuscenes_part/',
+                            'data/nuscenes-all/':
+                            's3://nuscenes_part/',
+                            './data/nuscenes-new/':
+                            's3://nuscenes_part/',
+                            'data/nuscenes-new/':
+                            's3://nuscenes_part/'
+                        }))),
+                dict(
+                    type='LoadPointsFromMultiSweeps',
+                    sweeps_num=10,
+                    use_dim=[0, 1, 2, 3, 4],
+                    file_client_args=dict(
+                        backend='petrel',
+                        path_mapping=dict({
+                            './data/nuscenes/':
+                            's3://nuscenes_part/',
+                            'data/nuscenes/':
+                            's3://nuscenes_part/',
+                            './data/nuscenes-all/':
+                            's3://nuscenes_part/',
+                            'data/nuscenes-all/':
+                            's3://nuscenes_part/',
+                            './data/nuscenes-new/':
+                            's3://nuscenes_part/',
+                            'data/nuscenes-new/':
+                            's3://nuscenes_part/'
+                        }))),
+                dict(
+                    type='LoadAnnotations3D',
+                    with_bbox_3d=True,
+                    with_label_3d=True),
+                dict(type='LoadMultiViewImageFromFiles'),
+                dict(
+                    type='GlobalRotScaleTrans',
+                    rot_range=[-0.785, 0.785],
+                    scale_ratio_range=[0.9, 1.1],
+                    translation_std=[0.5, 0.5, 0.5]),
+                dict(
+                    type='RandomFlip3D',
+                    sync_2d=True,
+                    flip_ratio_bev_horizontal=0.5,
+                    flip_ratio_bev_vertical=0.5),
+                dict(
+                    type='PointsRangeFilter',
+                    point_cloud_range=[-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]),
+                dict(
+                    type='ObjectRangeFilter',
+                    point_cloud_range=[-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]),
+                dict(
+                    type='ObjectNameFilter',
+                    classes=[
+                        'car', 'truck', 'construction_vehicle', 'bus',
+                        'trailer', 'barrier', 'motorcycle', 'bicycle',
+                        'pedestrian', 'traffic_cone'
+                    ]),
+                dict(type='PointShuffle'),
+                dict(type='MyResize', img_scale=(800, 448), keep_ratio=True),
+                dict(
+                    type='MyNormalize',
+                    mean=[123.675, 116.28, 103.53],
+                    std=[58.395, 57.12, 57.375],
+                    to_rgb=True),
+                dict(type='MyPad', size_divisor=32),
+                dict(
+                    type='DefaultFormatBundle3D',
+                    class_names=[
+                        'car', 'truck', 'construction_vehicle', 'bus',
+                        'trailer', 'barrier', 'motorcycle', 'bicycle',
+                        'pedestrian', 'traffic_cone'
+                    ]),
+                dict(
+                    type='Collect3D',
+                    keys=['points', 'img', 'gt_bboxes_3d', 'gt_labels_3d'])
+            ],
+            classes=[
+                'car', 'truck', 'construction_vehicle', 'bus', 'trailer',
+                'barrier', 'motorcycle', 'bicycle', 'pedestrian',
+                'traffic_cone'
+            ],
+            modality=dict(
+                use_lidar=True,
+                use_camera=True,
+                use_radar=False,
+                use_map=False,
+                use_external=False),
+            test_mode=False,
+            box_type_3d='LiDAR')),
+    val=dict(
+        type='NuScenesDataset',
+        data_root='data/nuscenes/',
+        num_views=6,
+        ann_file='data/nuscenes//nuscenes_infos_val.pkl',
+        load_interval=1,
+        pipeline=[
+            dict(
+                type='LoadPointsFromFile',
+                coord_type='LIDAR',
+                load_dim=5,
+                use_dim=[0, 1, 2, 3, 4],
+                file_client_args=dict(
+                    backend='petrel',
+                    path_mapping=dict({
+                        './data/nuscenes/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes/':
+                        's3://nuscenes_part/',
+                        './data/nuscenes-all/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes-all/':
+                        's3://nuscenes_part/',
+                        './data/nuscenes-new/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes-new/':
+                        's3://nuscenes_part/'
+                    }))),
+            dict(
+                type='LoadPointsFromMultiSweeps',
+                sweeps_num=10,
+                use_dim=[0, 1, 2, 3, 4],
+                file_client_args=dict(
+                    backend='petrel',
+                    path_mapping=dict({
+                        './data/nuscenes/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes/':
+                        's3://nuscenes_part/',
+                        './data/nuscenes-all/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes-all/':
+                        's3://nuscenes_part/',
+                        './data/nuscenes-new/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes-new/':
+                        's3://nuscenes_part/'
+                    }))),
+            dict(type='LoadMultiViewImageFromFiles'),
+            dict(
+                type='MultiScaleFlipAug3D',
+                img_scale=(800, 448),
+                pts_scale_ratio=1,
+                flip=False,
+                transforms=[
+                    dict(
+                        type='GlobalRotScaleTrans',
+                        rot_range=[0, 0],
+                        scale_ratio_range=[1.0, 1.0],
+                        translation_std=[0, 0, 0]),
+                    dict(type='RandomFlip3D'),
+                    dict(
+                        type='MyResize', img_scale=(800, 448),
+                        keep_ratio=True),
+                    dict(
+                        type='MyNormalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='MyPad', size_divisor=32),
+                    dict(
+                        type='DefaultFormatBundle3D',
+                        class_names=[
+                            'car', 'truck', 'construction_vehicle', 'bus',
+                            'trailer', 'barrier', 'motorcycle', 'bicycle',
+                            'pedestrian', 'traffic_cone'
+                        ],
+                        with_label=False),
+                    dict(type='Collect3D', keys=['points', 'img'])
+                ])
+        ],
+        classes=[
+            'car', 'truck', 'construction_vehicle', 'bus', 'trailer',
+            'barrier', 'motorcycle', 'bicycle', 'pedestrian', 'traffic_cone'
+        ],
+        modality=dict(
+            use_lidar=True,
+            use_camera=True,
+            use_radar=False,
+            use_map=False,
+            use_external=False),
+        test_mode=True,
+        box_type_3d='LiDAR'),
+    test=dict(
+        type='NuScenesDataset',
+        data_root='data/nuscenes/',
+        num_views=6,
+        ann_file='data/nuscenes//nuscenes_infos_val.pkl',
+        load_interval=1,
+        pipeline=[
+            dict(
+                type='LoadPointsFromFile',
+                coord_type='LIDAR',
+                load_dim=5,
+                use_dim=[0, 1, 2, 3, 4],
+                file_client_args=dict(
+                    backend='petrel',
+                    path_mapping=dict({
+                        './data/nuscenes/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes/':
+                        's3://nuscenes_part/',
+                        './data/nuscenes-all/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes-all/':
+                        's3://nuscenes_part/',
+                        './data/nuscenes-new/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes-new/':
+                        's3://nuscenes_part/'
+                    }))),
+            dict(
+                type='LoadPointsFromMultiSweeps',
+                sweeps_num=10,
+                use_dim=[0, 1, 2, 3, 4],
+                file_client_args=dict(
+                    backend='petrel',
+                    path_mapping=dict({
+                        './data/nuscenes/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes/':
+                        's3://nuscenes_part/',
+                        './data/nuscenes-all/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes-all/':
+                        's3://nuscenes_part/',
+                        './data/nuscenes-new/':
+                        's3://nuscenes_part/',
+                        'data/nuscenes-new/':
+                        's3://nuscenes_part/'
+                    }))),
+            dict(type='LoadMultiViewImageFromFiles'),
+            dict(
+                type='MultiScaleFlipAug3D',
+                img_scale=(800, 448),
+                pts_scale_ratio=1,
+                flip=False,
+                transforms=[
+                    dict(
+                        type='GlobalRotScaleTrans',
+                        rot_range=[0, 0],
+                        scale_ratio_range=[1.0, 1.0],
+                        translation_std=[0, 0, 0]),
+                    dict(type='RandomFlip3D'),
+                    dict(
+                        type='MyResize', img_scale=(800, 448),
+                        keep_ratio=True),
+                    dict(
+                        type='MyNormalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='MyPad', size_divisor=32),
+                    dict(
+                        type='DefaultFormatBundle3D',
+                        class_names=[
+                            'car', 'truck', 'construction_vehicle', 'bus',
+                            'trailer', 'barrier', 'motorcycle', 'bicycle',
+                            'pedestrian', 'traffic_cone'
+                        ],
+                        with_label=False),
+                    dict(type='Collect3D', keys=['points', 'img'])
+                ])
+        ],
+        classes=[
+            'car', 'truck', 'construction_vehicle', 'bus', 'trailer',
+            'barrier', 'motorcycle', 'bicycle', 'pedestrian', 'traffic_cone'
+        ],
+        modality=dict(
+            use_lidar=True,
+            use_camera=True,
+            use_radar=False,
+            use_map=False,
+            use_external=False),
+        test_mode=True,
+        box_type_3d='LiDAR'))
+voxel_size = [0.075, 0.075, 0.2]
+out_size_factor = 8
+evaluation = dict(interval=1)
+model = dict(
+    type='TransFusionDetector',
+    freeze_img=True,
+    img_backbone=dict(
+        type='ResNet',
+        depth=50,
+        num_stages=4,
+        out_indices=(0, 1, 2, 3),
+        frozen_stages=1,
+        norm_cfg=dict(type='BN', requires_grad=True),
+        norm_eval=True,
+        with_cp=False,
+        style='pytorch'),
+    img_neck=dict(
+        type='FPN',
+        in_channels=[256, 512, 1024, 2048],
+        out_channels=256,
+        num_outs=5),
+    pts_voxel_layer=dict(
+        max_num_points=10,
+        voxel_size=[0.075, 0.075, 0.2],
+        max_voxels=(120000, 160000),
+        point_cloud_range=[-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]),
+    pts_voxel_encoder=dict(type='HardSimpleVFE', num_features=5),
+    pts_middle_encoder=dict(
+        type='SparseEncoder',
+        in_channels=5,
+        sparse_shape=[41, 1440, 1440],
+        output_channels=128,
+        order=('conv', 'norm', 'act'),
+        encoder_channels=((16, 16, 32), (32, 32, 64), (64, 64, 128), (128,
+                                                                      128)),
+        encoder_paddings=((0, 0, 1), (0, 0, 1), (0, 0, [0, 1, 1]), (0, 0)),
+        block_type='basicblock'),
+    pts_backbone=dict(
+        type='SECOND',
+        in_channels=256,
+        out_channels=[128, 256],
+        layer_nums=[5, 5],
+        layer_strides=[1, 2],
+        norm_cfg=dict(type='BN', eps=0.001, momentum=0.01),
+        conv_cfg=dict(type='Conv2d', bias=False)),
+    pts_neck=dict(
+        type='SECONDFPN',
+        in_channels=[128, 256],
+        out_channels=[256, 256],
+        upsample_strides=[1, 2],
+        norm_cfg=dict(type='BN', eps=0.001, momentum=0.01),
+        upsample_cfg=dict(type='deconv', bias=False),
+        use_conv_for_no_stride=True),
+    pts_bbox_head=dict(
+        type='TransFusionHead',
+        fix_guide=False,
+        fuse_img=True,
+        num_views=6,
+        in_channels_img=256,
+        out_size_factor_img=4,
+        num_proposals=200,
+        auxiliary=True,
+        in_channels=512,
+        hidden_channel=128,
+        num_classes=10,
+        num_decoder_layers=1,
+        num_heads=8,
+        learnable_query_pos=False,
+        initialize_by_heatmap=True,
+        nms_kernel_size=3,
+        ffn_channel=256,
+        dropout=0.1,
+        bn_momentum=0.1,
+        activation='relu',
+        common_heads=dict(
+            center=(2, 2), height=(1, 2), dim=(3, 2), rot=(2, 2), vel=(2, 2)),
+        bbox_coder=dict(
+            type='TransFusionBBoxCoder',
+            pc_range=[-54.0, -54.0],
+            voxel_size=[0.075, 0.075],
+            out_size_factor=8,
+            post_center_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
+            score_threshold=0.0,
+            code_size=10),
+        loss_cls=dict(
+            type='FocalLoss',
+            use_sigmoid=True,
+            gamma=2,
+            alpha=0.25,
+            reduction='mean',
+            loss_weight=1.0),
+        loss_bbox=dict(type='L1Loss', reduction='mean', loss_weight=0.25),
+        loss_heatmap=dict(
+            type='GaussianFocalLoss', reduction='mean', loss_weight=1.0)),
+    train_cfg=dict(
+        pts=dict(
+            dataset='nuScenes',
+            assigner=dict(
+                type='HungarianAssigner3D',
+                iou_calculator=dict(type='BboxOverlaps3D', coordinate='lidar'),
+                cls_cost=dict(
+                    type='FocalLossCost', gamma=2, alpha=0.25, weight=0.15),
+                reg_cost=dict(type='BBoxBEVL1Cost', weight=0.25),
+                iou_cost=dict(type='IoU3DCost', weight=0.25)),
+            pos_weight=-1,
+            gaussian_overlap=0.1,
+            min_radius=2,
+            grid_size=[1440, 1440, 40],
+            voxel_size=[0.075, 0.075, 0.2],
+            out_size_factor=8,
+            code_weights=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.2, 0.2],
+            point_cloud_range=[-54.0, -54.0, -5.0, 54.0, 54.0, 3.0])),
+    test_cfg=dict(
+        pts=dict(
+            dataset='nuScenes',
+            grid_size=[1440, 1440, 40],
+            out_size_factor=8,
+            pc_range=[-54.0, -54.0],
+            voxel_size=[0.075, 0.075],
+            nms_type=None)))
+optimizer = dict(type='AdamW', lr=0.0001, weight_decay=0.01)
+optimizer_config = dict(grad_clip=dict(max_norm=0.1, norm_type=2))
+lr_config = dict(
+    policy='cyclic',
+    target_ratio=(10, 0.0001),
+    cyclic_times=1,
+    step_ratio_up=0.4)
+momentum_config = dict(
+    policy='cyclic',
+    target_ratio=(0.8947368421052632, 1),
+    cyclic_times=1,
+    step_ratio_up=0.4)
+total_epochs = 6
+checkpoint_config = dict(interval=1)
+log_config = dict(
+    interval=50,
+    hooks=[dict(type='TextLoggerHook'),
+           dict(type='TensorboardLoggerHook')])
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = 'work_dirs/transfusion_nusc_voxel_L/transfusion_20.pth'
+load_img_from = 'work_dirs/cascade_mask_rcnn_r50_fpn_coco-20e_20e_nuim_20201009_124951-40963960.pth'
+resume_from = None
+workflow = [('train', 1)]
+gpu_ids = range(0, 1)
+freeze_lidar_components = True
+find_unused_parameters = True
+work_dir = './work_dirs/transfusion_fix'
+
+2022-10-31 10:38:29,707 - mmdet - INFO - Set random seed to 0, deterministic: False
+2022-10-31 10:38:30,293 - mmdet - INFO - param need to update:
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.shared_conv.weight
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.shared_conv.bias
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.heatmap_head.0.conv.weight
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.heatmap_head.0.bn.weight
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.heatmap_head.0.bn.bias
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.heatmap_head.1.weight
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.heatmap_head.1.bias
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.class_encoding.weight
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.class_encoding.bias
+2022-10-31 10:38:30,297 - mmdet - INFO - pts_bbox_head.decoder.0.self_attn.in_proj_weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.self_attn.in_proj_bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.self_attn.out_proj.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.self_attn.out_proj.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.multihead_attn.in_proj_weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.multihead_attn.in_proj_bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.multihead_attn.out_proj.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.multihead_attn.out_proj.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.linear1.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.linear1.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.linear2.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.linear2.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.norm1.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.norm1.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.norm2.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.norm2.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.norm3.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.norm3.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.self_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.self_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.self_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.self_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.self_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.self_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.cross_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.cross_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.cross_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,298 - mmdet - INFO - pts_bbox_head.decoder.0.cross_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.0.cross_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.0.cross_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_attn.in_proj_weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_attn.in_proj_bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_attn.out_proj.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_attn.out_proj.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.multihead_attn.in_proj_weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.multihead_attn.in_proj_bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.multihead_attn.out_proj.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.multihead_attn.out_proj.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.linear1.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.linear1.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.linear2.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.linear2.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.norm1.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.norm1.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.norm2.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.norm2.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.norm3.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.norm3.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,299 - mmdet - INFO - pts_bbox_head.decoder.1.self_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.multihead_attn.in_proj_weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.multihead_attn.in_proj_bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.multihead_attn.out_proj.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.multihead_attn.out_proj.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.linear1.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.linear1.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.linear2.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.linear2.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.norm1.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.norm1.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.norm2.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.norm2.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.norm3.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.norm3.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.self_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.self_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.self_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.self_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.self_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.self_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,300 - mmdet - INFO - pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.multihead_attn.in_proj_weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.multihead_attn.in_proj_bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.multihead_attn.out_proj.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.multihead_attn.out_proj.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.linear1.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.linear1.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.linear2.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.linear2.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.norm1.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.norm1.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.norm2.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.norm2.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.norm3.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.norm3.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.self_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.self_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.self_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.self_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.self_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.self_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,301 - mmdet - INFO - pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.multihead_attn.in_proj_weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.multihead_attn.in_proj_bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.multihead_attn.out_proj.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.multihead_attn.out_proj.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.linear1.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.linear1.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.linear2.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.linear2.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.norm1.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.norm1.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.norm2.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.norm2.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.norm3.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.norm3.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.self_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.self_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.self_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.self_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.self_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.self_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,302 - mmdet - INFO - pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.multihead_attn.in_proj_weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.multihead_attn.in_proj_bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.multihead_attn.out_proj.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.multihead_attn.out_proj.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.linear1.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.linear1.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.linear2.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.linear2.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.norm1.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.norm1.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.norm2.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.norm2.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.norm3.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.norm3.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.self_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.self_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.self_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.self_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.self_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.self_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,303 - mmdet - INFO - pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.multihead_attn.in_proj_weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.multihead_attn.in_proj_bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.multihead_attn.out_proj.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.multihead_attn.out_proj.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.linear1.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.linear1.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.linear2.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.linear2.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.norm1.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.norm1.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.norm2.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.norm2.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.norm3.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.norm3.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.self_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.self_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.self_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.self_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.self_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.self_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,304 - mmdet - INFO - pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.multihead_attn.in_proj_weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.multihead_attn.in_proj_bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.multihead_attn.out_proj.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.multihead_attn.out_proj.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.linear1.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.linear1.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.linear2.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.linear2.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.norm1.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.norm1.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.norm2.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.norm2.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.norm3.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.norm3.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.self_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.self_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.self_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.self_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.self_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.self_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.0.weight
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.0.bias
+2022-10-31 10:38:30,305 - mmdet - INFO - pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.1.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.1.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.3.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.3.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.center.0.conv.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.center.0.bn.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.center.0.bn.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.center.1.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.center.1.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.height.0.conv.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.height.0.bn.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.height.0.bn.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.height.1.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.height.1.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.dim.0.conv.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.dim.0.bn.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.dim.0.bn.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.dim.1.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.dim.1.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.rot.0.conv.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.rot.0.bn.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.rot.0.bn.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.rot.1.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.rot.1.bias
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.vel.0.conv.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.vel.0.bn.weight
+2022-10-31 10:38:30,306 - mmdet - INFO - pts_bbox_head.prediction_heads.0.vel.0.bn.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.0.vel.1.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.0.vel.1.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.0.heatmap.0.conv.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.0.heatmap.0.bn.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.0.heatmap.0.bn.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.0.heatmap.1.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.0.heatmap.1.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.center.0.conv.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.center.0.bn.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.center.0.bn.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.center.1.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.center.1.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.height.0.conv.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.height.0.bn.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.height.0.bn.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.height.1.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.height.1.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.dim.0.conv.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.dim.0.bn.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.dim.0.bn.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.dim.1.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.dim.1.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.rot.0.conv.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.rot.0.bn.weight
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.rot.0.bn.bias
+2022-10-31 10:38:30,307 - mmdet - INFO - pts_bbox_head.prediction_heads.1.rot.1.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.rot.1.bias
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.vel.0.conv.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.vel.0.bn.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.vel.0.bn.bias
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.vel.1.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.vel.1.bias
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.heatmap.0.conv.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.heatmap.0.bn.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.heatmap.0.bn.bias
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.heatmap.1.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.prediction_heads.1.heatmap.1.bias
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.shared_conv_img.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.shared_conv_img.bias
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.heatmap_head_img.0.conv.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.heatmap_head_img.0.bn.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.heatmap_head_img.0.bn.bias
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.heatmap_head_img.1.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.heatmap_head_img.1.bias
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.fc.0.weight
+2022-10-31 10:38:30,308 - mmdet - INFO - pts_bbox_head.fc.0.bias
+2022-10-31 10:38:30,313 - mmdet - INFO - Model:
+TransFusionDetector(
+  (pts_voxel_layer): Voxelization(voxel_size=[0.075, 0.075, 0.2], point_cloud_range=[-54.0, -54.0, -5.0, 54.0, 54.0, 3.0], max_num_points=10, max_voxels=(120000, 160000))
+  (pts_voxel_encoder): HardSimpleVFE()
+  (pts_middle_encoder): SparseEncoder(
+    (conv_input): SparseSequential(
+      (0): SubMConv3d()
+      (1): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+      (2): ReLU(inplace=True)
+    )
+    (encoder_layers): SparseSequential(
+      (encoder_layer1): SparseSequential(
+        (0): SparseBasicBlock(
+          (conv1): SubMConv3d()
+          (bn1): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (conv2): SubMConv3d()
+          (bn2): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (relu): ReLU(inplace=True)
+        )
+        (1): SparseBasicBlock(
+          (conv1): SubMConv3d()
+          (bn1): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (conv2): SubMConv3d()
+          (bn2): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (relu): ReLU(inplace=True)
+        )
+        (2): SparseSequential(
+          (0): SparseConv3d()
+          (1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (2): ReLU(inplace=True)
+        )
+      )
+      (encoder_layer2): SparseSequential(
+        (0): SparseBasicBlock(
+          (conv1): SubMConv3d()
+          (bn1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (conv2): SubMConv3d()
+          (bn2): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (relu): ReLU(inplace=True)
+        )
+        (1): SparseBasicBlock(
+          (conv1): SubMConv3d()
+          (bn1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (conv2): SubMConv3d()
+          (bn2): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (relu): ReLU(inplace=True)
+        )
+        (2): SparseSequential(
+          (0): SparseConv3d()
+          (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (2): ReLU(inplace=True)
+        )
+      )
+      (encoder_layer3): SparseSequential(
+        (0): SparseBasicBlock(
+          (conv1): SubMConv3d()
+          (bn1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (conv2): SubMConv3d()
+          (bn2): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (relu): ReLU(inplace=True)
+        )
+        (1): SparseBasicBlock(
+          (conv1): SubMConv3d()
+          (bn1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (conv2): SubMConv3d()
+          (bn2): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (relu): ReLU(inplace=True)
+        )
+        (2): SparseSequential(
+          (0): SparseConv3d()
+          (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (2): ReLU(inplace=True)
+        )
+      )
+      (encoder_layer4): SparseSequential(
+        (0): SparseBasicBlock(
+          (conv1): SubMConv3d()
+          (bn1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (conv2): SubMConv3d()
+          (bn2): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (relu): ReLU(inplace=True)
+        )
+        (1): SparseBasicBlock(
+          (conv1): SubMConv3d()
+          (bn1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (conv2): SubMConv3d()
+          (bn2): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+          (relu): ReLU(inplace=True)
+        )
+      )
+    )
+    (conv_out): SparseSequential(
+      (0): SparseConv3d()
+      (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+      (2): ReLU(inplace=True)
+    )
+  )
+  (pts_backbone): SECOND(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (4): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (5): ReLU(inplace=True)
+        (6): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (7): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (8): ReLU(inplace=True)
+        (9): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (10): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (11): ReLU(inplace=True)
+        (12): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (13): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (14): ReLU(inplace=True)
+        (15): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (16): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (17): ReLU(inplace=True)
+      )
+      (1): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (4): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (5): ReLU(inplace=True)
+        (6): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (7): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (8): ReLU(inplace=True)
+        (9): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (10): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (11): ReLU(inplace=True)
+        (12): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (13): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (14): ReLU(inplace=True)
+        (15): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (16): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (17): ReLU(inplace=True)
+      )
+    )
+  )
+  (pts_neck): SECONDFPN(
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (2): ReLU(inplace=True)
+      )
+      (1): Sequential(
+        (0): ConvTranspose2d(256, 256, kernel_size=(2, 2), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=False)
+        (2): ReLU(inplace=True)
+      )
+    )
+  )
+  (pts_bbox_head): TransFusionHead(
+    (loss_cls): FocalLoss()
+    (loss_bbox): L1Loss()
+    (loss_iou): VarifocalLoss()
+    (loss_heatmap): GaussianFocalLoss()
+    (shared_conv): Conv2d(512, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (heatmap_head): Sequential(
+      (0): ConvModule(
+        (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+        (activate): ReLU(inplace=True)
+      )
+      (1): Conv2d(128, 10, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+    (class_encoding): Conv1d(10, 128, kernel_size=(1,), stride=(1,))
+    (decoder): ModuleList(
+      (0): TransformerDecoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (multihead_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (linear1): Linear(in_features=128, out_features=256, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=256, out_features=128, bias=True)
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+        (self_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+        (cross_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (1): TransformerDecoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (multihead_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (linear1): Linear(in_features=128, out_features=256, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=256, out_features=128, bias=True)
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+        (self_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+        (cross_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (2): TransformerDecoderLayer(
+        (multihead_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (linear1): Linear(in_features=128, out_features=256, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=256, out_features=128, bias=True)
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+        (self_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+        (cross_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (3): TransformerDecoderLayer(
+        (multihead_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (linear1): Linear(in_features=128, out_features=256, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=256, out_features=128, bias=True)
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+        (self_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+        (cross_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (4): TransformerDecoderLayer(
+        (multihead_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (linear1): Linear(in_features=128, out_features=256, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=256, out_features=128, bias=True)
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+        (self_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+        (cross_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (5): TransformerDecoderLayer(
+        (multihead_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (linear1): Linear(in_features=128, out_features=256, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=256, out_features=128, bias=True)
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+        (self_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+        (cross_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (6): TransformerDecoderLayer(
+        (multihead_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (linear1): Linear(in_features=128, out_features=256, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=256, out_features=128, bias=True)
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+        (self_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+        (cross_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (7): TransformerDecoderLayer(
+        (multihead_attn): MultiheadAttention(
+          (out_proj): Linear(in_features=128, out_features=128, bias=True)
+        )
+        (linear1): Linear(in_features=128, out_features=256, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=256, out_features=128, bias=True)
+        (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+        (self_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+        (cross_posembed): PositionEmbeddingLearned(
+          (position_embedding_head): Sequential(
+            (0): Conv1d(2, 128, kernel_size=(1,), stride=(1,))
+            (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU(inplace=True)
+            (3): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+    )
+    (prediction_heads): ModuleList(
+      (0): FFN(
+        (center): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(128, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 2, kernel_size=(1,), stride=(1,))
+        )
+        (height): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(128, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 1, kernel_size=(1,), stride=(1,))
+        )
+        (dim): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(128, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 3, kernel_size=(1,), stride=(1,))
+        )
+        (rot): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(128, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 2, kernel_size=(1,), stride=(1,))
+        )
+        (vel): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(128, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 2, kernel_size=(1,), stride=(1,))
+        )
+        (heatmap): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(128, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 10, kernel_size=(1,), stride=(1,))
+        )
+      )
+      (1): FFN(
+        (center): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 2, kernel_size=(1,), stride=(1,))
+        )
+        (height): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 1, kernel_size=(1,), stride=(1,))
+        )
+        (dim): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 3, kernel_size=(1,), stride=(1,))
+        )
+        (rot): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 2, kernel_size=(1,), stride=(1,))
+        )
+        (vel): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 2, kernel_size=(1,), stride=(1,))
+        )
+        (heatmap): Sequential(
+          (0): ConvModule(
+            (conv): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (activate): ReLU(inplace=True)
+          )
+          (1): Conv1d(64, 10, kernel_size=(1,), stride=(1,))
+        )
+      )
+    )
+    (shared_conv_img): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (heatmap_head_img): Sequential(
+      (0): ConvModule(
+        (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (activate): ReLU(inplace=True)
+      )
+      (1): Conv2d(128, 10, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+    (fc): Sequential(
+      (0): Conv1d(128, 128, kernel_size=(1,), stride=(1,))
+    )
+  )
+  (img_backbone): ResNet(
+    (conv1): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+    (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu): ReLU(inplace=True)
+    (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+    (layer1): ResLayer(
+      (0): Bottleneck(
+        (conv1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer2): ResLayer(
+      (0): Bottleneck(
+        (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer3): ResLayer(
+      (0): Bottleneck(
+        (conv1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (4): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (5): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer4): ResLayer(
+      (0): Bottleneck(
+        (conv1): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(1024, 2048, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+  )
+  (img_neck): FPN(
+    (lateral_convs): ModuleList(
+      (0): ConvModule(
+        (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1))
+      )
+      (1): ConvModule(
+        (conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+      )
+      (2): ConvModule(
+        (conv): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1))
+      )
+      (3): ConvModule(
+        (conv): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+    (fpn_convs): ModuleList(
+      (0): ConvModule(
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (1): ConvModule(
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (2): ConvModule(
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (3): ConvModule(
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+    )
+  )
+)
+2022-10-31 10:38:56,956 - mmdet - INFO - load checkpoint from local path: work_dirs/transfusion_nusc_voxel_L/transfusion_20.pth
+2022-10-31 10:38:57,172 - mmdet - WARNING - The model and loaded state dict do not match exactly
+
+missing keys in source state_dict: pts_bbox_head.decoder.1.self_attn.in_proj_weight, pts_bbox_head.decoder.1.self_attn.in_proj_bias, pts_bbox_head.decoder.1.self_attn.out_proj.weight, pts_bbox_head.decoder.1.self_attn.out_proj.bias, pts_bbox_head.decoder.1.multihead_attn.in_proj_weight, pts_bbox_head.decoder.1.multihead_attn.in_proj_bias, pts_bbox_head.decoder.1.multihead_attn.out_proj.weight, pts_bbox_head.decoder.1.multihead_attn.out_proj.bias, pts_bbox_head.decoder.1.linear1.weight, pts_bbox_head.decoder.1.linear1.bias, pts_bbox_head.decoder.1.linear2.weight, pts_bbox_head.decoder.1.linear2.bias, pts_bbox_head.decoder.1.norm1.weight, pts_bbox_head.decoder.1.norm1.bias, pts_bbox_head.decoder.1.norm2.weight, pts_bbox_head.decoder.1.norm2.bias, pts_bbox_head.decoder.1.norm3.weight, pts_bbox_head.decoder.1.norm3.bias, pts_bbox_head.decoder.1.self_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.1.self_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.1.self_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.1.self_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.1.self_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.1.self_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.1.self_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.1.self_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.1.cross_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.2.multihead_attn.in_proj_weight, pts_bbox_head.decoder.2.multihead_attn.in_proj_bias, pts_bbox_head.decoder.2.multihead_attn.out_proj.weight, pts_bbox_head.decoder.2.multihead_attn.out_proj.bias, pts_bbox_head.decoder.2.linear1.weight, pts_bbox_head.decoder.2.linear1.bias, pts_bbox_head.decoder.2.linear2.weight, pts_bbox_head.decoder.2.linear2.bias, pts_bbox_head.decoder.2.norm1.weight, pts_bbox_head.decoder.2.norm1.bias, pts_bbox_head.decoder.2.norm2.weight, pts_bbox_head.decoder.2.norm2.bias, pts_bbox_head.decoder.2.norm3.weight, pts_bbox_head.decoder.2.norm3.bias, pts_bbox_head.decoder.2.self_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.2.self_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.2.self_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.2.self_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.2.self_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.2.self_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.2.self_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.2.self_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.2.cross_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.3.multihead_attn.in_proj_weight, pts_bbox_head.decoder.3.multihead_attn.in_proj_bias, pts_bbox_head.decoder.3.multihead_attn.out_proj.weight, pts_bbox_head.decoder.3.multihead_attn.out_proj.bias, pts_bbox_head.decoder.3.linear1.weight, pts_bbox_head.decoder.3.linear1.bias, pts_bbox_head.decoder.3.linear2.weight, pts_bbox_head.decoder.3.linear2.bias, pts_bbox_head.decoder.3.norm1.weight, pts_bbox_head.decoder.3.norm1.bias, pts_bbox_head.decoder.3.norm2.weight, pts_bbox_head.decoder.3.norm2.bias, pts_bbox_head.decoder.3.norm3.weight, pts_bbox_head.decoder.3.norm3.bias, pts_bbox_head.decoder.3.self_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.3.self_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.3.self_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.3.self_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.3.self_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.3.self_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.3.self_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.3.self_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.3.cross_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.4.multihead_attn.in_proj_weight, pts_bbox_head.decoder.4.multihead_attn.in_proj_bias, pts_bbox_head.decoder.4.multihead_attn.out_proj.weight, pts_bbox_head.decoder.4.multihead_attn.out_proj.bias, pts_bbox_head.decoder.4.linear1.weight, pts_bbox_head.decoder.4.linear1.bias, pts_bbox_head.decoder.4.linear2.weight, pts_bbox_head.decoder.4.linear2.bias, pts_bbox_head.decoder.4.norm1.weight, pts_bbox_head.decoder.4.norm1.bias, pts_bbox_head.decoder.4.norm2.weight, pts_bbox_head.decoder.4.norm2.bias, pts_bbox_head.decoder.4.norm3.weight, pts_bbox_head.decoder.4.norm3.bias, pts_bbox_head.decoder.4.self_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.4.self_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.4.self_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.4.self_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.4.self_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.4.self_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.4.self_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.4.self_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.4.cross_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.5.multihead_attn.in_proj_weight, pts_bbox_head.decoder.5.multihead_attn.in_proj_bias, pts_bbox_head.decoder.5.multihead_attn.out_proj.weight, pts_bbox_head.decoder.5.multihead_attn.out_proj.bias, pts_bbox_head.decoder.5.linear1.weight, pts_bbox_head.decoder.5.linear1.bias, pts_bbox_head.decoder.5.linear2.weight, pts_bbox_head.decoder.5.linear2.bias, pts_bbox_head.decoder.5.norm1.weight, pts_bbox_head.decoder.5.norm1.bias, pts_bbox_head.decoder.5.norm2.weight, pts_bbox_head.decoder.5.norm2.bias, pts_bbox_head.decoder.5.norm3.weight, pts_bbox_head.decoder.5.norm3.bias, pts_bbox_head.decoder.5.self_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.5.self_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.5.self_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.5.self_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.5.self_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.5.self_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.5.self_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.5.self_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.5.cross_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.6.multihead_attn.in_proj_weight, pts_bbox_head.decoder.6.multihead_attn.in_proj_bias, pts_bbox_head.decoder.6.multihead_attn.out_proj.weight, pts_bbox_head.decoder.6.multihead_attn.out_proj.bias, pts_bbox_head.decoder.6.linear1.weight, pts_bbox_head.decoder.6.linear1.bias, pts_bbox_head.decoder.6.linear2.weight, pts_bbox_head.decoder.6.linear2.bias, pts_bbox_head.decoder.6.norm1.weight, pts_bbox_head.decoder.6.norm1.bias, pts_bbox_head.decoder.6.norm2.weight, pts_bbox_head.decoder.6.norm2.bias, pts_bbox_head.decoder.6.norm3.weight, pts_bbox_head.decoder.6.norm3.bias, pts_bbox_head.decoder.6.self_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.6.self_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.6.self_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.6.self_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.6.self_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.6.self_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.6.self_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.6.self_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.6.cross_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.7.multihead_attn.in_proj_weight, pts_bbox_head.decoder.7.multihead_attn.in_proj_bias, pts_bbox_head.decoder.7.multihead_attn.out_proj.weight, pts_bbox_head.decoder.7.multihead_attn.out_proj.bias, pts_bbox_head.decoder.7.linear1.weight, pts_bbox_head.decoder.7.linear1.bias, pts_bbox_head.decoder.7.linear2.weight, pts_bbox_head.decoder.7.linear2.bias, pts_bbox_head.decoder.7.norm1.weight, pts_bbox_head.decoder.7.norm1.bias, pts_bbox_head.decoder.7.norm2.weight, pts_bbox_head.decoder.7.norm2.bias, pts_bbox_head.decoder.7.norm3.weight, pts_bbox_head.decoder.7.norm3.bias, pts_bbox_head.decoder.7.self_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.7.self_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.7.self_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.7.self_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.7.self_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.7.self_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.7.self_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.7.self_posembed.position_embedding_head.3.bias, pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.0.weight, pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.0.bias, pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.1.weight, pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.1.bias, pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.1.running_mean, pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.1.running_var, pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.3.weight, pts_bbox_head.decoder.7.cross_posembed.position_embedding_head.3.bias, pts_bbox_head.prediction_heads.1.center.0.conv.weight, pts_bbox_head.prediction_heads.1.center.0.bn.weight, pts_bbox_head.prediction_heads.1.center.0.bn.bias, pts_bbox_head.prediction_heads.1.center.0.bn.running_mean, pts_bbox_head.prediction_heads.1.center.0.bn.running_var, pts_bbox_head.prediction_heads.1.center.1.weight, pts_bbox_head.prediction_heads.1.center.1.bias, pts_bbox_head.prediction_heads.1.height.0.conv.weight, pts_bbox_head.prediction_heads.1.height.0.bn.weight, pts_bbox_head.prediction_heads.1.height.0.bn.bias, pts_bbox_head.prediction_heads.1.height.0.bn.running_mean, pts_bbox_head.prediction_heads.1.height.0.bn.running_var, pts_bbox_head.prediction_heads.1.height.1.weight, pts_bbox_head.prediction_heads.1.height.1.bias, pts_bbox_head.prediction_heads.1.dim.0.conv.weight, pts_bbox_head.prediction_heads.1.dim.0.bn.weight, pts_bbox_head.prediction_heads.1.dim.0.bn.bias, pts_bbox_head.prediction_heads.1.dim.0.bn.running_mean, pts_bbox_head.prediction_heads.1.dim.0.bn.running_var, pts_bbox_head.prediction_heads.1.dim.1.weight, pts_bbox_head.prediction_heads.1.dim.1.bias, pts_bbox_head.prediction_heads.1.rot.0.conv.weight, pts_bbox_head.prediction_heads.1.rot.0.bn.weight, pts_bbox_head.prediction_heads.1.rot.0.bn.bias, pts_bbox_head.prediction_heads.1.rot.0.bn.running_mean, pts_bbox_head.prediction_heads.1.rot.0.bn.running_var, pts_bbox_head.prediction_heads.1.rot.1.weight, pts_bbox_head.prediction_heads.1.rot.1.bias, pts_bbox_head.prediction_heads.1.vel.0.conv.weight, pts_bbox_head.prediction_heads.1.vel.0.bn.weight, pts_bbox_head.prediction_heads.1.vel.0.bn.bias, pts_bbox_head.prediction_heads.1.vel.0.bn.running_mean, pts_bbox_head.prediction_heads.1.vel.0.bn.running_var, pts_bbox_head.prediction_heads.1.vel.1.weight, pts_bbox_head.prediction_heads.1.vel.1.bias, pts_bbox_head.prediction_heads.1.heatmap.0.conv.weight, pts_bbox_head.prediction_heads.1.heatmap.0.bn.weight, pts_bbox_head.prediction_heads.1.heatmap.0.bn.bias, pts_bbox_head.prediction_heads.1.heatmap.0.bn.running_mean, pts_bbox_head.prediction_heads.1.heatmap.0.bn.running_var, pts_bbox_head.prediction_heads.1.heatmap.1.weight, pts_bbox_head.prediction_heads.1.heatmap.1.bias, pts_bbox_head.shared_conv_img.weight, pts_bbox_head.shared_conv_img.bias, pts_bbox_head.heatmap_head_img.0.conv.weight, pts_bbox_head.heatmap_head_img.0.bn.weight, pts_bbox_head.heatmap_head_img.0.bn.bias, pts_bbox_head.heatmap_head_img.0.bn.running_mean, pts_bbox_head.heatmap_head_img.0.bn.running_var, pts_bbox_head.heatmap_head_img.1.weight, pts_bbox_head.heatmap_head_img.1.bias, pts_bbox_head.fc.0.weight, pts_bbox_head.fc.0.bias, img_backbone.conv1.weight, img_backbone.bn1.weight, img_backbone.bn1.bias, img_backbone.bn1.running_mean, img_backbone.bn1.running_var, img_backbone.layer1.0.conv1.weight, img_backbone.layer1.0.bn1.weight, img_backbone.layer1.0.bn1.bias, img_backbone.layer1.0.bn1.running_mean, img_backbone.layer1.0.bn1.running_var, img_backbone.layer1.0.conv2.weight, img_backbone.layer1.0.bn2.weight, img_backbone.layer1.0.bn2.bias, img_backbone.layer1.0.bn2.running_mean, img_backbone.layer1.0.bn2.running_var, img_backbone.layer1.0.conv3.weight, img_backbone.layer1.0.bn3.weight, img_backbone.layer1.0.bn3.bias, img_backbone.layer1.0.bn3.running_mean, img_backbone.layer1.0.bn3.running_var, img_backbone.layer1.0.downsample.0.weight, img_backbone.layer1.0.downsample.1.weight, img_backbone.layer1.0.downsample.1.bias, img_backbone.layer1.0.downsample.1.running_mean, img_backbone.layer1.0.downsample.1.running_var, img_backbone.layer1.1.conv1.weight, img_backbone.layer1.1.bn1.weight, img_backbone.layer1.1.bn1.bias, img_backbone.layer1.1.bn1.running_mean, img_backbone.layer1.1.bn1.running_var, img_backbone.layer1.1.conv2.weight, img_backbone.layer1.1.bn2.weight, img_backbone.layer1.1.bn2.bias, img_backbone.layer1.1.bn2.running_mean, img_backbone.layer1.1.bn2.running_var, img_backbone.layer1.1.conv3.weight, img_backbone.layer1.1.bn3.weight, img_backbone.layer1.1.bn3.bias, img_backbone.layer1.1.bn3.running_mean, img_backbone.layer1.1.bn3.running_var, img_backbone.layer1.2.conv1.weight, img_backbone.layer1.2.bn1.weight, img_backbone.layer1.2.bn1.bias, img_backbone.layer1.2.bn1.running_mean, img_backbone.layer1.2.bn1.running_var, img_backbone.layer1.2.conv2.weight, img_backbone.layer1.2.bn2.weight, img_backbone.layer1.2.bn2.bias, img_backbone.layer1.2.bn2.running_mean, img_backbone.layer1.2.bn2.running_var, img_backbone.layer1.2.conv3.weight, img_backbone.layer1.2.bn3.weight, img_backbone.layer1.2.bn3.bias, img_backbone.layer1.2.bn3.running_mean, img_backbone.layer1.2.bn3.running_var, img_backbone.layer2.0.conv1.weight, img_backbone.layer2.0.bn1.weight, img_backbone.layer2.0.bn1.bias, img_backbone.layer2.0.bn1.running_mean, img_backbone.layer2.0.bn1.running_var, img_backbone.layer2.0.conv2.weight, img_backbone.layer2.0.bn2.weight, img_backbone.layer2.0.bn2.bias, img_backbone.layer2.0.bn2.running_mean, img_backbone.layer2.0.bn2.running_var, img_backbone.layer2.0.conv3.weight, img_backbone.layer2.0.bn3.weight, img_backbone.layer2.0.bn3.bias, img_backbone.layer2.0.bn3.running_mean, img_backbone.layer2.0.bn3.running_var, img_backbone.layer2.0.downsample.0.weight, img_backbone.layer2.0.downsample.1.weight, img_backbone.layer2.0.downsample.1.bias, img_backbone.layer2.0.downsample.1.running_mean, img_backbone.layer2.0.downsample.1.running_var, img_backbone.layer2.1.conv1.weight, img_backbone.layer2.1.bn1.weight, img_backbone.layer2.1.bn1.bias, img_backbone.layer2.1.bn1.running_mean, img_backbone.layer2.1.bn1.running_var, img_backbone.layer2.1.conv2.weight, img_backbone.layer2.1.bn2.weight, img_backbone.layer2.1.bn2.bias, img_backbone.layer2.1.bn2.running_mean, img_backbone.layer2.1.bn2.running_var, img_backbone.layer2.1.conv3.weight, img_backbone.layer2.1.bn3.weight, img_backbone.layer2.1.bn3.bias, img_backbone.layer2.1.bn3.running_mean, img_backbone.layer2.1.bn3.running_var, img_backbone.layer2.2.conv1.weight, img_backbone.layer2.2.bn1.weight, img_backbone.layer2.2.bn1.bias, img_backbone.layer2.2.bn1.running_mean, img_backbone.layer2.2.bn1.running_var, img_backbone.layer2.2.conv2.weight, img_backbone.layer2.2.bn2.weight, img_backbone.layer2.2.bn2.bias, img_backbone.layer2.2.bn2.running_mean, img_backbone.layer2.2.bn2.running_var, img_backbone.layer2.2.conv3.weight, img_backbone.layer2.2.bn3.weight, img_backbone.layer2.2.bn3.bias, img_backbone.layer2.2.bn3.running_mean, img_backbone.layer2.2.bn3.running_var, img_backbone.layer2.3.conv1.weight, img_backbone.layer2.3.bn1.weight, img_backbone.layer2.3.bn1.bias, img_backbone.layer2.3.bn1.running_mean, img_backbone.layer2.3.bn1.running_var, img_backbone.layer2.3.conv2.weight, img_backbone.layer2.3.bn2.weight, img_backbone.layer2.3.bn2.bias, img_backbone.layer2.3.bn2.running_mean, img_backbone.layer2.3.bn2.running_var, img_backbone.layer2.3.conv3.weight, img_backbone.layer2.3.bn3.weight, img_backbone.layer2.3.bn3.bias, img_backbone.layer2.3.bn3.running_mean, img_backbone.layer2.3.bn3.running_var, img_backbone.layer3.0.conv1.weight, img_backbone.layer3.0.bn1.weight, img_backbone.layer3.0.bn1.bias, img_backbone.layer3.0.bn1.running_mean, img_backbone.layer3.0.bn1.running_var, img_backbone.layer3.0.conv2.weight, img_backbone.layer3.0.bn2.weight, img_backbone.layer3.0.bn2.bias, img_backbone.layer3.0.bn2.running_mean, img_backbone.layer3.0.bn2.running_var, img_backbone.layer3.0.conv3.weight, img_backbone.layer3.0.bn3.weight, img_backbone.layer3.0.bn3.bias, img_backbone.layer3.0.bn3.running_mean, img_backbone.layer3.0.bn3.running_var, img_backbone.layer3.0.downsample.0.weight, img_backbone.layer3.0.downsample.1.weight, img_backbone.layer3.0.downsample.1.bias, img_backbone.layer3.0.downsample.1.running_mean, img_backbone.layer3.0.downsample.1.running_var, img_backbone.layer3.1.conv1.weight, img_backbone.layer3.1.bn1.weight, img_backbone.layer3.1.bn1.bias, img_backbone.layer3.1.bn1.running_mean, img_backbone.layer3.1.bn1.running_var, img_backbone.layer3.1.conv2.weight, img_backbone.layer3.1.bn2.weight, img_backbone.layer3.1.bn2.bias, img_backbone.layer3.1.bn2.running_mean, img_backbone.layer3.1.bn2.running_var, img_backbone.layer3.1.conv3.weight, img_backbone.layer3.1.bn3.weight, img_backbone.layer3.1.bn3.bias, img_backbone.layer3.1.bn3.running_mean, img_backbone.layer3.1.bn3.running_var, img_backbone.layer3.2.conv1.weight, img_backbone.layer3.2.bn1.weight, img_backbone.layer3.2.bn1.bias, img_backbone.layer3.2.bn1.running_mean, img_backbone.layer3.2.bn1.running_var, img_backbone.layer3.2.conv2.weight, img_backbone.layer3.2.bn2.weight, img_backbone.layer3.2.bn2.bias, img_backbone.layer3.2.bn2.running_mean, img_backbone.layer3.2.bn2.running_var, img_backbone.layer3.2.conv3.weight, img_backbone.layer3.2.bn3.weight, img_backbone.layer3.2.bn3.bias, img_backbone.layer3.2.bn3.running_mean, img_backbone.layer3.2.bn3.running_var, img_backbone.layer3.3.conv1.weight, img_backbone.layer3.3.bn1.weight, img_backbone.layer3.3.bn1.bias, img_backbone.layer3.3.bn1.running_mean, img_backbone.layer3.3.bn1.running_var, img_backbone.layer3.3.conv2.weight, img_backbone.layer3.3.bn2.weight, img_backbone.layer3.3.bn2.bias, img_backbone.layer3.3.bn2.running_mean, img_backbone.layer3.3.bn2.running_var, img_backbone.layer3.3.conv3.weight, img_backbone.layer3.3.bn3.weight, img_backbone.layer3.3.bn3.bias, img_backbone.layer3.3.bn3.running_mean, img_backbone.layer3.3.bn3.running_var, img_backbone.layer3.4.conv1.weight, img_backbone.layer3.4.bn1.weight, img_backbone.layer3.4.bn1.bias, img_backbone.layer3.4.bn1.running_mean, img_backbone.layer3.4.bn1.running_var, img_backbone.layer3.4.conv2.weight, img_backbone.layer3.4.bn2.weight, img_backbone.layer3.4.bn2.bias, img_backbone.layer3.4.bn2.running_mean, img_backbone.layer3.4.bn2.running_var, img_backbone.layer3.4.conv3.weight, img_backbone.layer3.4.bn3.weight, img_backbone.layer3.4.bn3.bias, img_backbone.layer3.4.bn3.running_mean, img_backbone.layer3.4.bn3.running_var, img_backbone.layer3.5.conv1.weight, img_backbone.layer3.5.bn1.weight, img_backbone.layer3.5.bn1.bias, img_backbone.layer3.5.bn1.running_mean, img_backbone.layer3.5.bn1.running_var, img_backbone.layer3.5.conv2.weight, img_backbone.layer3.5.bn2.weight, img_backbone.layer3.5.bn2.bias, img_backbone.layer3.5.bn2.running_mean, img_backbone.layer3.5.bn2.running_var, img_backbone.layer3.5.conv3.weight, img_backbone.layer3.5.bn3.weight, img_backbone.layer3.5.bn3.bias, img_backbone.layer3.5.bn3.running_mean, img_backbone.layer3.5.bn3.running_var, img_backbone.layer4.0.conv1.weight, img_backbone.layer4.0.bn1.weight, img_backbone.layer4.0.bn1.bias, img_backbone.layer4.0.bn1.running_mean, img_backbone.layer4.0.bn1.running_var, img_backbone.layer4.0.conv2.weight, img_backbone.layer4.0.bn2.weight, img_backbone.layer4.0.bn2.bias, img_backbone.layer4.0.bn2.running_mean, img_backbone.layer4.0.bn2.running_var, img_backbone.layer4.0.conv3.weight, img_backbone.layer4.0.bn3.weight, img_backbone.layer4.0.bn3.bias, img_backbone.layer4.0.bn3.running_mean, img_backbone.layer4.0.bn3.running_var, img_backbone.layer4.0.downsample.0.weight, img_backbone.layer4.0.downsample.1.weight, img_backbone.layer4.0.downsample.1.bias, img_backbone.layer4.0.downsample.1.running_mean, img_backbone.layer4.0.downsample.1.running_var, img_backbone.layer4.1.conv1.weight, img_backbone.layer4.1.bn1.weight, img_backbone.layer4.1.bn1.bias, img_backbone.layer4.1.bn1.running_mean, img_backbone.layer4.1.bn1.running_var, img_backbone.layer4.1.conv2.weight, img_backbone.layer4.1.bn2.weight, img_backbone.layer4.1.bn2.bias, img_backbone.layer4.1.bn2.running_mean, img_backbone.layer4.1.bn2.running_var, img_backbone.layer4.1.conv3.weight, img_backbone.layer4.1.bn3.weight, img_backbone.layer4.1.bn3.bias, img_backbone.layer4.1.bn3.running_mean, img_backbone.layer4.1.bn3.running_var, img_backbone.layer4.2.conv1.weight, img_backbone.layer4.2.bn1.weight, img_backbone.layer4.2.bn1.bias, img_backbone.layer4.2.bn1.running_mean, img_backbone.layer4.2.bn1.running_var, img_backbone.layer4.2.conv2.weight, img_backbone.layer4.2.bn2.weight, img_backbone.layer4.2.bn2.bias, img_backbone.layer4.2.bn2.running_mean, img_backbone.layer4.2.bn2.running_var, img_backbone.layer4.2.conv3.weight, img_backbone.layer4.2.bn3.weight, img_backbone.layer4.2.bn3.bias, img_backbone.layer4.2.bn3.running_mean, img_backbone.layer4.2.bn3.running_var, img_neck.lateral_convs.0.conv.weight, img_neck.lateral_convs.0.conv.bias, img_neck.lateral_convs.1.conv.weight, img_neck.lateral_convs.1.conv.bias, img_neck.lateral_convs.2.conv.weight, img_neck.lateral_convs.2.conv.bias, img_neck.lateral_convs.3.conv.weight, img_neck.lateral_convs.3.conv.bias, img_neck.fpn_convs.0.conv.weight, img_neck.fpn_convs.0.conv.bias, img_neck.fpn_convs.1.conv.weight, img_neck.fpn_convs.1.conv.bias, img_neck.fpn_convs.2.conv.weight, img_neck.fpn_convs.2.conv.bias, img_neck.fpn_convs.3.conv.weight, img_neck.fpn_convs.3.conv.bias
+
+2022-10-31 10:38:57,174 - mmdet - INFO - Start running, host: gaoyulu@SH-IDC1-10-140-24-95, work_dir: /mnt/cache/gaoyulu/BEVFusion/work_dirs/transfusion_fix
+2022-10-31 10:38:57,174 - mmdet - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) CyclicLrUpdaterHook                
+(HIGH        ) CyclicMomentumUpdaterHook          
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) CyclicLrUpdaterHook                
+(HIGH        ) CyclicMomentumUpdaterHook          
+(NORMAL      ) DistSamplerSeedHook                
+(NORMAL      ) DistEvalHook                       
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) CyclicLrUpdaterHook                
+(HIGH        ) CyclicMomentumUpdaterHook          
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) DistEvalHook                       
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) DistSamplerSeedHook                
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+2022-10-31 10:38:57,175 - mmdet - INFO - workflow: [('train', 1)], max: 6 epochs
+2022-10-31 10:38:57,175 - mmdet - INFO - Checkpoints will be saved to /mnt/cache/gaoyulu/BEVFusion/work_dirs/transfusion_fix by HardDiskBackend.

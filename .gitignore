@@ -1,0 +1,6 @@
+vis
+data
+__pycache__
+*.pth
+transfusion/mmdet3d_tf
+temp*.png
