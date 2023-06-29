@@ -9,7 +9,7 @@ This is the official PyTorch implementation of our paper "Fusion is Not Enough: 
 3. [Environment preparation](#environment-preparation)
 4. [Prepare dataset annotation file and pretrained model](#prepare-dataset-annotation-file-and-pretrained-model)
 5. [Config log](#config-log)
-6. [Sensitivity heatmap generation](sensitivity-heatmap-generation)
+6. [Sensitivity heatmap generation](#sensitivity-heatmap-generation)
 7. [Patch generation](#patch-generation)
 8. [Patch evaluation](#patch-evaluation)
 
